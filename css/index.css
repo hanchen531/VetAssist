@@ -1,0 +1,265 @@
+.title {
+    font-size: 40px;
+    font-weight: 500;
+    font-family: serif;
+}
+
+.subtitle {
+    font-size: large;
+    font-weight: 300;
+    font-family: serif;
+}
+
+.mob-welcome {
+    display: none;
+}
+
+.mob-act {
+    display: none;
+}
+
+.mob-activity-box {
+    display: flex;
+    flex-direction: column; 
+    gap: 5px;            
+    margin: 10px;
+    list-style: none;
+}
+
+.mobile-btn {
+    display: none;
+}
+.main-content{
+    padding-top: 10px;
+}
+
+.slogan {
+    font-size: x-large;
+    font-weight: lighter;
+    padding-top: 30px;
+    font-family: serif;
+}
+
+.mob-only{
+    display: none;
+}
+
+.dropdown li {
+    margin-left: 15px;
+}
+
+.header-menu ul li a {
+    color: #333;
+    font-weight: 500;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 4px 0;
+    transition: color 0.2s ease, border-bottom 0.2s ease;
+    border-bottom: 2px solid transparent;
+}
+
+
+.header-menu ul {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.header-menu ul li {
+    list-style: none;
+}
+
+.client-area a {
+    color: black;
+    text-decoration: none;
+}
+
+.client-area a:hover {
+    color: blue;
+}
+
+.mob-footer {
+    border-top: 1px solid #ccc;
+    border-radius: 20px 20px 0 0;
+    background-color: #fff;
+    padding: 10px 10px 15px;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    text-align: center;
+}
+
+.footer-icons {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+}
+
+.footer-icons a {
+    color: #000;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-icons a:hover {
+    color: #007bff;
+}
+
+
+.footer-text {
+    font-size: 0.75rem;
+    color: #555;
+    line-height: 1.2;
+}
+
+.footer-text a {
+    color: #333;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.action-button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-start; 
+}
+
+.action-button-container .btn {
+    flex: 0 0 calc(50% - 5px); 
+    box-sizing: border-box;
+    text-align: center;
+}
+
+
+.sidebar {
+    display: none;
+}
+
+@media (max-width: 576px) {
+
+    .btn {
+        margin-left: 12px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 3px 3px;
+        max-width: 160px;
+        width: auto;
+        line-height: 2;
+    }
+
+    .btn-mob,
+    .btn-mob:hover {
+        padding: 3px 3px;
+        width: 160px;
+        line-height: 2;
+        height: 50px;
+        align-items: center;
+        color: #fff;
+        background-color: #000000;
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    .mob-welcome {
+        padding: 20px;
+        display: flex;
+        font-family: serif;
+        font-weight: bold;
+        font-size: xx-large;
+    }
+
+    .mob-act {
+
+        padding-top: 40px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-bottom: 20px;
+        display: flex;
+        font-family: serif;
+        font-weight: bold;
+        font-size: xx-large;
+    }
+
+    .mobile-btn {
+        display: flex;
+    }
+
+    body {
+        background-image: none !important;
+    }
+
+    .header-menu {
+        display: none;
+    }
+
+    .desktop-content {
+        display: none;
+    }
+
+    .title {
+        display: none;
+    }
+
+    .subtitle {
+        display: none;
+    }
+
+    .dropdownbutton button {
+        display: flex;
+    }
+
+    .sidebar {
+        display: flex;
+        position: fixed;
+        left: -200px;
+        top: 11vh;
+        height: 89vh;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .mob-activity-box {
+        display: flex;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 10px 15px;
+        background-color: #fff;
+        font-size: 0.95rem;
+        font-family: serif;
+        line-height: 1.5;
+        margin-top: 10px;
+    }
+
+    .mob-activity-box li {
+        list-style: none;
+        margin-bottom: 8px;
+    }
+
+    .mobile-footer {
+        display: none;
+    }
+
+    .activity-box {
+        display: none;
+    }
+
+}
+
+@media (max-width:768px){
+    .mob-only{
+        display: flex !important;
+        flex-wrap: wrap;
+    }
+}

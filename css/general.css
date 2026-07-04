@@ -1,0 +1,245 @@
+.btn {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    border-radius: 20px;
+    border: 0;
+    padding: 0.6rem 1.875rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:before,
+.btn:after {
+    content: '';
+    width: 100%;
+    height: 50px;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.2);
+    top: 0;
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    -webkit-transition: all .5s;
+    transition: all .5s;
+}
+
+.btn:before {
+    left: 100%;
+}
+
+.btn:after {
+    left: -100%;
+}
+
+.btn:hover:before {
+    left: -100%;
+}
+
+.btn:hover:after {
+    left: 100%;
+}
+
+.btn-square {
+    border-radius: 0 !important;
+}
+
+.btn:focus,
+.form-control:focus {
+    box-shadow: none !important;
+}
+
+.btn-primary,
+.btn-primary:hover {
+    color: #fff;
+    background-color: #000000;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.btn-secondary,
+.btn-secondary:hover {
+    color: #fff;
+    background-color: rgb(121, 0, 31);
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.main-content{
+    margin-top: 11vh;
+}
+
+
+.main-header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 11vh;
+    padding: 1rem 0;
+    -webkit-transition: all .2s;
+    transition: all .2s;
+    color: #ffffff;
+    display: flex;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 1);
+    align-items: center;
+    justify-content: center;
+
+}
+
+.container.d-flex {
+    flex-wrap: nowrap;
+    position: relative;
+}
+
+.text-right {
+    flex-shrink: 0;
+    margin-left: 20px;
+}
+
+
+.account-btn {
+    display: flex;
+    align-items: center;
+    color: rgb(0, 0, 0);
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: small;
+}
+
+.account-btn:hover {
+    text-decoration: none;
+}
+
+
+.custom-dropdown {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    padding: 10px 0;
+    min-width: 160px;
+    border: none;
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+}
+
+.dropdown:hover .custom-dropdown {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+.custom-dropdown li {
+    list-style: none;
+}
+
+.custom-dropdown li a {
+    display: block;
+    padding: 12px 20px;
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.custom-dropdown li a:hover {
+    background: #007bff;
+    color: white;
+    border-radius: 4px;
+}
+
+
+
+.logo {
+    margin-right: auto;
+    max-width: 180px;
+    flex-shrink: 0;
+}
+
+.logo {
+
+    margin-right: auto;
+}
+
+.logo img {
+    width: auto;
+    height: 50px;
+    max-width: 100%;
+}
+
+/* Side Bar */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 11vh;
+    width: 200px;
+    height: 89vh;
+    background-color: rgb(239, 239, 239);
+    color: rgb(0, 0, 0);
+    padding: 20px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.sidebar.active {
+    transform: translateX(0);
+}
+
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 20px 0;
+}
+
+.sidebar ul li a {
+    color: black;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.sidebar ul li a:hover {
+    color: rgb(112, 109, 109);
+}
+
+.mobile-footer-mini {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 45px;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 999;
+    box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+
+}
+
+.mobile-footer-mini a {
+    color: black;
+    font-size: 1.2rem;
+    text-decoration: none;
+}
+
+.mobile-footer-mini a:hover {
+    color: #007bff;
+}
+
+@media (min-width: 576px) {
+    .mobile-footer-mini {
+        display: none;
+    }
+}

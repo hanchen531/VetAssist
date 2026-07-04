@@ -1,0 +1,128 @@
+body {
+    background-color: rgb(255, 211, 146);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+    z-index: -10;
+}
+
+.main-header {
+    padding: 5px;
+}
+.btn-otp {
+    background: none;
+    border: none;
+    color: #007bff;
+    padding: 0;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.btn-otp:hover,
+.btn-otp:focus {
+    text-decoration: underline;
+    outline: none;
+}
+.login-container {
+    margin-top: 17vh;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+        min-height: max-content;
+    max-height: 70vh;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-custom {
+    width: 100%;
+    justify-content: center;
+    background-color: rgb(143, 202, 255);
+    box-shadow: 3px;
+    border-radius: 4px;
+
+}
+
+.btn-custom:hover {
+    background-color: rgb(143, 202, 255);
+}
+
+.btn-center {
+    text-align: center;
+}
+
+.forgot-pw {
+    text-align: right;
+
+}
+
+.forgot-pw a {
+    font-size: small;
+    padding: 0px !important;
+    margin: 0px;
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        width: 95vh;
+        padding: 25px;
+        margin-top: 15vh;
+
+    }
+
+    .btn-custom {
+        width: 100%;
+        justify-content: center;
+        background-color: rgb(143, 202, 255);
+        box-shadow: 3px;
+        border-radius: 4px;
+        margin-top: 20px;
+    }
+}
+
+
+
+@media (max-width: 576px) {
+    .login-container {
+        max-width: 90%;
+        padding: 15px;
+        border-radius: 6px;
+        box-shadow: none;
+        margin-top: 17vh;
+    }
+
+    .login-container input {
+        font-size: 0.9rem;
+    }
+
+    .btn-custom {
+        font-size: 0.9rem;
+    }
+
+    .btn-custom {
+        width: 90%;
+        justify-content: center;
+        background-color: rgb(143, 202, 255);
+        box-shadow: 3px;
+        border-radius: 4px;
+        margin-top: 20px;
+    }
+}
+
+
+@media (min-width: 800px) {
+    .login-container {
+        width: 95vh;
+        padding: 25px;
+        margin-top: 20vh;
+    }
+
+    .btn-custom {
+        width: 100%;
+        justify-content: center;
+        background-color: rgb(143, 202, 255);
+        box-shadow: 3px;
+        border-radius: 4px;
+        margin-top: 20px;
+    }
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Login</title>
+    <link rel="icon" type="image/jpg" href="img/icon.png">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+
+<body>
+
+    <header class="header">
+        <div class="main-header">
+            <div class="container d-flex align-items-center justify-content-center">
+                <div class="">
+                    <a href="index.php" class="justify-content-center">
+                        <img src="img/logo-center.png" alt="VetAssistLogo" style="height: 50px; width: 156px;">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <div class="container d-flex justify-content-center">
+        <div class="login-container col-md-6 col-lg-8 col-10">
+            <form action="PHP/login.php" method="POST">
+                <div class="mb-3">
+                    <label for="email" class="form-label">EMAIL</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="aabbcc@domain.com" required>
+                </div>
+            
+                <div class="mb-3">
+                    <label for="password" class="form-label">PASSWORD</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="********" required>
+                </div>
+            
+                <div class="mb-3 btn-center">
+                    <button type="submit" class="btn btn-secondary btn-custom">LOGIN</button>
+                </div>
+                
+                <div class="text-center">
+                    <p><b>OR</b></p>
+                </div>
+                <div class="mb-3 btn-center">
+                    <a href="registration.php" class="btn btn-primary btn-custom">CREATE NEW ACCOUNT</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/fontawesome-all.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/menu.min.js"></script>
+</body>

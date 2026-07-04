@@ -1,0 +1,328 @@
+/*Header Padding*/
+.container {
+    max-width: 100% !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(255, 211, 146);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+    z-index: -10;
+}
+
+.display-area {
+    flex: 1;
+    min-height: 89vh;
+    max-height: 89vh;
+    display: flex;
+}
+
+.logout-btn {
+    position: absolute;
+    bottom: 20px;
+    padding: 23px;
+    left: 0px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    color: black;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+
+
+.main-content {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    margin-left: 200px;
+    transition: margin 0.3s ease;
+    height: calc(100vh - 11vh);
+}
+
+.main-content form {
+    width: 100%;
+}
+
+.input-box {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px 12px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.create-profile p {
+    margin: 0;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+    gap: 10px;
+    height: 48px;
+}
+
+select.form-input {
+    padding: 10px 12px;
+    font-size: 15px;
+    line-height: 1.5;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%227%22%20viewBox%3D%220%200%2010%207%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%207%205-7z%22%20fill%3D%22%23000%22/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 10px 7px;
+
+}
+
+.form-row label {
+    width: 160px;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+input.form-input,
+select.form-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 15px;
+    width: 100%;
+    max-width: 480px;
+    min-width: 240px;
+    box-sizing: border-box;
+}
+
+
+
+.component-area {
+    font-family: serif;
+    flex: 1;
+    background: rgb(239, 239, 239);
+    border-radius: 10px;
+    height: 100%;
+    padding: 30px;
+
+}
+
+
+.create-profile input {
+    padding-left: 10px;
+    margin-left: 10px;
+}
+
+.create-profile {
+    padding-top: 30px;
+    font-size: larger;
+    padding-left: 40px;
+    padding-right: 100px;
+
+}
+
+
+
+.submit-btn {
+    margin-top: 7vh;
+    background-color: #add8e6;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar a.active {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    color: black;
+    transition: background-color 0.3s ease;
+    background-color: rgb(143, 202, 255);
+}
+
+.submit-btn:hover {
+    background-color: #87ceeb;
+}
+
+.menu-toggle {
+    display: none;
+}
+
+
+
+/*Responsive Design Code*/
+@media (max-width: 576px) {
+    .component-area {
+        height: fit-content;
+    }
+
+    .menu-toggle {
+        right: 15px;
+        top: 50%;
+    }
+
+    .logo {
+        max-width: 120px;
+    }
+
+    .account-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .create-profile p {
+        grid-template-columns: 1fr;
+    }
+
+    .container.d-flex {
+        flex-wrap: nowrap;
+
+    }
+
+    .main-content {
+        flex-direction: column;
+        align-items: flex-start;
+
+    }
+
+    .create-profile {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .create-profile input {
+        width: 100%;
+        padding-left: 10px;
+        padding-right: 0;
+        margin-left: 0px;
+    }
+
+    .opt-profile {
+        padding-left: 20px;
+        padding-right: 10px;
+    }
+
+    .text-right {
+        margin-left: 0 !important;
+        max-width: 40%;
+    }
+
+    .account-btn {
+        white-space: nowrap;
+        padding: 8px 10px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .logo {
+        max-width: 100px !important;
+        margin-right: 5px !important;
+    }
+
+    .menu-toggle {
+        position: absolute;
+        left: 10px !important;
+        right: auto !important;
+    }
+
+    .main-content {
+        flex-direction: column;
+        margin-left: 0 !important;
+        padding: 10px;
+    }
+
+    .component-area {
+        width: 100% !important;
+        padding: 20px;
+        box-sizing: border-box;
+        height: 85vh;
+        overflow-y: auto;
+        padding: 16px 18px;
+        box-sizing: border-box;
+    }
+
+    .form-row {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+        gap: 6px;
+    }
+
+}
+
+
+@media (max-width: 992px) {
+    .sidebar {
+        position: fixed;
+        left: -200px;
+        top: 11vh;
+        height: 89vh;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .change-profile p {
+        grid-template-columns: 1fr;
+    }
+
+    .menu-toggle {
+        display: block !important;
+        position: relative;
+        left: 10px;
+        z-index: 1000;
+        background: none;
+        border: none;
+        font-size: 24px;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+    }
+
+    .menu-toggle {
+        display: flex !important;
+        right: 85px;
+        top: 50%;
+    }
+
+    .logo {
+        max-width: 140px;
+        margin-right: 0;
+    }
+
+    .text-right {
+        margin-left: auto;
+
+    }
+}

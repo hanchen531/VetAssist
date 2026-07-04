@@ -1,0 +1,290 @@
+/*Header Padding*/
+.container {
+    max-width: 100% !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(255, 211, 146);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+    z-index: -10;
+}
+
+.display-area {
+    flex: 1;
+    min-height: 89vh;
+
+    display: flex;
+}
+
+.logout-btn {
+    position: absolute;
+    bottom: 20px;
+    padding: 23px;
+    left: 0px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    color: black;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.sidebar a.active {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    color: black;
+    transition: background-color 0.3s ease;
+    background-color: rgb(143, 202, 255);
+}
+
+.menu-toggle {
+    display: none;
+}
+
+.left-box,
+.right-box {
+    background: #f3f3f3;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+    box-sizing: border-box;
+}
+
+.left-box{
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.bill-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    background-color: #fff;
+}
+
+.bill-table th,
+.bill-table td {
+    border: 1px solid #ccc;
+    padding: 8px 10px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.history-item {
+    border-top: 1px solid #ddd;
+    padding: 10px 0;
+    font-size: 0.9rem;
+}
+
+.history-item:first-child {
+    border-top: none;
+}
+
+.main-content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    margin-left: 200px;
+    padding: 30px;
+    box-sizing: border-box;
+    height: calc(100vh - 110px);
+    overflow: hidden;
+}
+
+@media (max-width: 480px) {
+    .bill-table {
+        font-size: 0.8rem;
+    }
+
+    .left-box {
+        max-height: none;
+        overflow-y: visible;
+    }
+
+    .right-box {
+        max-height: none;
+        overflow-y: visible;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .menu-toggle {
+        right: 15px;
+        top: 50%;
+    }
+
+    .logo {
+        max-width: 120px;
+    }
+
+    .account-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .data-card {
+        grid-column: 1 / -1;
+    }
+
+    .container.d-flex {
+        flex-wrap: nowrap;
+
+    }
+
+    .text-right {
+        margin-left: 0 !important;
+        max-width: 40%;
+    }
+
+    .account-btn {
+        white-space: nowrap;
+        padding: 8px 10px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .logo {
+        max-width: 100px !important;
+        margin-right: 5px !important;
+    }
+
+    .menu-toggle {
+        position: absolute;
+        left: 10px !important;
+        right: auto !important;
+    }
+
+    .main-content {
+        display: block;
+        padding: 15px;
+        margin-left: 0;
+        height: auto;
+        background-color: rgb(255, 211, 146);
+    }
+
+    .left-box,
+    .right-box {
+        width: 100%;
+        max-height: none;
+        margin-bottom: 20px;
+        overflow: visible;
+    }
+
+    .bill-table {
+        display: block;
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    .bill-table thead {
+        background-color: #f8f8f8;
+        position: sticky;
+        top: 0;
+    }
+
+    .bill-table th,
+    .bill-table td {
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    .history-item {
+        font-size: 0.85rem;
+    }
+}
+
+
+@media (max-width: 992px) {
+    .sidebar {
+        position: fixed;
+        left: -200px;
+        top: 11vh;
+        height: 89vh;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .menu-toggle {
+        display: block !important;
+        position: relative;
+        left: 10px;
+        z-index: 1000;
+        background: none;
+        border: none;
+        font-size: 24px;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+    }
+
+    .menu-toggle {
+        display: flex !important;
+        right: 85px;
+        top: 50%;
+    }
+
+    .logo {
+        max-width: 140px;
+        margin-right: 0;
+    }
+
+    .text-right {
+        margin-left: auto;
+
+    }
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 10px;
+    padding: 25px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+}
+
+
+.modal-title {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #007bff;
+}
+
+.receipt-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}

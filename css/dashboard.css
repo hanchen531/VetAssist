@@ -1,0 +1,312 @@
+.container {
+    max-width: 100% !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(255, 211, 146);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+    z-index: -10;
+}
+
+.display-area {
+    height: 100%;
+    flex: 1;
+    min-height: max-content;
+    max-height: auto;
+    display: flex;
+}
+
+
+.logout-btn {
+    position: absolute;
+    bottom: 60px;
+    padding: 23px;
+    left: 0px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    color: black;
+    font-size: 18px;
+    text-decoration: none;
+}
+.cus-area{
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; align-items: stretch;
+}
+
+
+.sidebar a.active {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    color: black;
+    transition: background-color 0.3s ease;
+    background-color: rgb(143, 202, 255);
+}
+
+
+/*Laptop & Big Size*/
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+    margin-top: 11vh;
+    margin-left: 200px; 
+    transition: margin 0.3s ease;
+    height: auto;
+}
+
+.doctor-section {
+    display: flex;
+    flex: 1;
+    gap: 20px;
+   
+    height: 100%;
+}
+
+.profile-card {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgb(239, 239, 239);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.data-card {
+    flex: 1;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: auto;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 20px;
+
+}
+
+.menu-toggle {
+    display: none;
+}
+
+
+.pet-img {
+    height: 60px;
+    width: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.profile-left {
+    display: flex;
+    align-items: center;
+
+}
+
+.pet-main-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.profile-right p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+
+data-card-r {
+    height: 90%;
+}
+
+.data-card h5 {
+    font-family: serif;
+    margin-bottom: 10px;
+}
+
+.data-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid #eee;
+}
+
+.data-item:first-of-type {
+    border-top: none;
+}
+
+.data-item i {
+    color: #333;
+    margin-right: 8px;
+}
+
+.sub {
+    font-size: 0.8rem;
+    color: gray;
+}
+
+
+@media (max-width: 576px) {
+
+    .menu-toggle {
+        right: 15px;
+        top: 50%;
+    }
+
+    .logo {
+        max-width: 120px;
+    }
+
+    .account-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+
+    .data-card {
+        height: 60%;
+        flex-direction: column;
+        flex: 1 1 100%;
+        height: fit-content;
+    }
+
+    .main-content {
+        overflow-y: auto;
+        height: 100%;
+    }
+
+    .mobile-footer-mini {
+        margin-top: 20px;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    .cus-area{
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .main-content {
+        flex-direction: column;
+        gap: 16px;
+        min-height:fit-content;
+        max-height: auto;
+        height: 95%;
+    }
+
+    .data-card {
+        flex: 1;
+        overflow-y: auto;
+        width: 100% !important;
+        flex: none !important;
+        padding: 16px;
+        font-size: 14px;
+
+    }
+    .doctor-section{
+         flex-direction: column;
+    }
+    .display-area {
+        height: 100%;
+    }
+
+    .container.d-flex {
+        flex-wrap: nowrap;
+
+    }
+
+    .text-right {
+        margin-left: 0 !important;
+        max-width: 40%;
+    }
+
+    .account-btn {
+        white-space: nowrap;
+        padding: 8px 10px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .logo {
+        max-width: 100px !important;
+        margin-right: 5px !important;
+    }
+
+    .menu-toggle {
+        position: absolute;
+        left: 10px !important;
+        right: auto !important;
+    }
+    
+    .doc-card{
+        height: 40%;
+        overflow-y: auto;
+    }
+}
+
+
+@media (max-width: 992px) {
+    .sidebar {
+        position: fixed;
+        left: -200px;
+        top: 11vh;
+        height: 89vh;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .menu-toggle {
+        display: block !important;
+        position: relative;
+        left: 10px;
+        z-index: 1000;
+        background: none;
+        border: none;
+        font-size: 24px;
+    }
+
+
+    .main-content {
+        margin-left: 0 !important;
+    }
+
+    .menu-toggle {
+        display: flex !important;
+        right: 85px;
+        top: 50%;
+    }
+
+    .logo {
+        max-width: 140px;
+        margin-right: 0;
+    }
+
+    .text-right {
+        margin-left: auto;
+
+    }
+}
