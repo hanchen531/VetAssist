@@ -1,6 +1,6 @@
 <?php
-$clientId = 'Af-IyoqYQErQw1uc-hu7CivQhwQ_dwtKNfyGhGAE6hWH1K7ltKBnl2CV65ETWEFYkAmbmhuKFmS9lxwK';
-$secret = 'ELwj6QJ31RZ7Zu-07m-VN5DUwrMY-wiy-PMpX9tjiogMzknQmreyudDD9FNe85nB_bCcgKWkY3xIN-yg';
+$clientId = ' ';
+$secret = ' ';
 
 $paymentID = $_GET['paymentID'] ?? 'UNKNOWN';
 $amount = $_GET['amount'] ?? '0.01';
