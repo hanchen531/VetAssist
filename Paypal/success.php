@@ -6,8 +6,8 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 
-$clientId = 'Af-IyoqYQErQw1uc-hu7CivQhwQ_dwtKNfyGhGAE6hWH1K7ltKBnl2CV65ETWEFYkAmbmhuKFmS9lxwK';
-$secret   = 'ELwj6QJ31RZ7Zu-07m-VN5DUwrMY-wiy-PMpX9tjiogMzknQmreyudDD9FNe85nB_bCcgKWkY3xIN-yg';
+$clientId = '';
+$secret   = '';
 
 $orderID = $_GET['token'] ?? '';
 if (!$orderID) exit("Didn't find order number!");
