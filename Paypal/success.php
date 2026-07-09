@@ -1,13 +1,11 @@
 <?php
-include '../PHP/db_conn.php'; 
-
-
+session_start();
+include '../PHP/db_conn.php';
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-
-$clientId = ' ';
-$secret   = ' ';
+$clientId = 'Af-IyoqYQErQw1uc-hu7CivQhwQ_dwtKNfyGhGAE6hWH1K7ltKBnl2CV65ETWEFYkAmbmhuKFmS9lxwK';
+$secret   = 'ELwj6QJ31RZ7Zu-07m-VN5DUwrMY-wiy-PMpX9tjiogMzknQmreyudDD9FNe85nB_bCcgKWkY3xIN-yg';
 
 $orderID = $_GET['token'] ?? '';
 if (!$orderID) exit("Didn't find order number!");
@@ -40,28 +38,85 @@ $captureResponse = curl_exec($ch);
 $captureData = json_decode($captureResponse, true);
 curl_close($ch);
 
-
-$status         = $captureData['status'] ?? 'UNKNOWN';
-$referenceID    = $captureData['purchase_units'][0]['reference_id'] ?? '';
-$amount         = $captureData['purchase_units'][0]['payments']['captures'][0]['amount']['value'] ?? '0.00';
-$payerAccount   = $captureData['payer']['email_address'] ?? 'unknown@example.com';
-$method         = 'PayPal';
+$status = $captureData['status'] ?? 'UNKNOWN';
+$referenceID = $captureData['purchase_units'][0]['reference_id'] ?? '';
+$paidAmount = $captureData['purchase_units'][0]['payments']['captures'][0]['amount']['value'] ?? '0.00';
+$currency = $captureData['purchase_units'][0]['payments']['captures'][0]['amount']['currency_code'] ?? '';
+$payerAccount = $captureData['payer']['email_address'] ?? 'unknown@example.com';
+$method = 'PayPal';
 $transactionDate = date('Y-m-d H:i:s');
 
-if ($status !== 'COMPLETED') exit("❌ Payment Failure（Status：$status）");
 
-$stmt1 = $conn->prepare("UPDATE Payment SET status = 1 WHERE paymentID = ?");
-$stmt1->bind_param("s", $referenceID);
+
+if ($status !== 'COMPLETED') {
+    http_response_code(400);
+    exit('Payment not completed.');
+}
+
+if (!isset($_SESSION['userID'])) {
+    http_response_code(401);
+    exit('Unauthorized');
+}
+
+if (!ctype_digit((string)$referenceID)) {
+    http_response_code(400);
+    exit('Invalid payment reference.');
+}
+
+$paymentID = (int)$referenceID;
+$customerID = (int)$_SESSION['userID'];
+
+$stmt = $conn->prepare("
+    SELECT amount, status
+    FROM Payment
+    WHERE paymentID = ?
+      AND customerID = ?
+    LIMIT 1
+");
+
+$stmt->bind_param("ii", $paymentID, $customerID);
+$stmt->execute();
+$result = $stmt->get_result();
+$payment = $result->fetch_assoc();
+$stmt->close();
+
+if (!$payment) {
+    http_response_code(404);
+    exit('Payment not found.');
+}
+
+$expectedAmount = number_format((float)$payment['amount'], 2, '.', '');
+$actualAmount = number_format((float)$paidAmount, 2, '.', '');
+
+if ($actualAmount !== $expectedAmount) {
+    http_response_code(400);
+    error_log("Payment amount mismatch. paymentID=$paymentID expected=$expectedAmount actual=$actualAmount currency=$currency");
+    exit('Payment amount mismatch.');
+}
+
+if ((int)$payment['status'] === 1) {
+    exit('Payment already processed.');
+}
+
+$stmt1 = $conn->prepare("
+    UPDATE Payment
+    SET status = 1
+    WHERE paymentID = ?
+      AND customerID = ?
+      AND status = 0
+");
+$stmt1->bind_param("ii", $paymentID, $customerID);
 $stmt1->execute();
 $stmt1->close();
 
-
 $stmt2 = $conn->prepare("
-    INSERT INTO OnlinePaymentGateway 
+    INSERT INTO OnlinePaymentGateway
     (paymentID, transactionStatus, transactionDate, paymentMethod, Amount, payerAccount)
     VALUES (?, ?, ?, ?, ?, ?)
 ");
-$stmt2->bind_param("isssds", $referenceID, $status, $transactionDate, $method, $amount, $payerAccount);
+
+$gatewayAmount = (float)$actualAmount;
+$stmt2->bind_param("isssds", $paymentID, $status, $transactionDate, $method, $gatewayAmount, $payerAccount);
 $stmt2->execute();
 $stmt2->close();
 
@@ -110,7 +165,7 @@ $conn->close();
     <p class="order-text">Thank you for your payment.</p>
     <p class="order-text">Your Order ID:</p>
     <h4 class="text-primary mb-4"><?php echo htmlspecialchars($referenceID); ?></h4>
-    <p class="order-text">Amount Paid: $<?php echo htmlspecialchars($amount); ?> USD</p>
+    <p class="order-text">Amount Paid: $<?php echo htmlspecialchars($actualAmount); ?> USD</p>
     <p class="order-text">Payer Account: <?php echo htmlspecialchars($payerAccount); ?></p>
     <a href="../payments.php" class="btn btn-outline-primary btn-home">Return to Home</a>
   </div>

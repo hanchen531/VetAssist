@@ -1,8 +1,5 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 session_start();
-
 include 'PHP/db_conn.php';
 
 if (!isset($_SESSION['username'])) {
@@ -192,7 +189,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
                         <form method="POST" action="PHP/pay_gateway.php">
                             <input type="hidden" name="paymentID" value="<?php echo $bill['paymentID']; ?>">
-                            <input type="hidden" name="amount" value="<?php echo $bill['amount']; ?>">
+                            
 
                             <label><strong>Select Payment Method:</strong></label><br>
                             <div class="form-check">
