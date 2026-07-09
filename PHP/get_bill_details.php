@@ -1,32 +1,44 @@
-
-
 <?php
+session_start();
 include 'db_conn.php';
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-if (!isset($_GET['paymentID'])) {
-    echo "Missing payment ID.";
-    exit;
+
+if(!isset($_SESSION['userID'])){
+    http_response_code(401);
+    exit('Unauthorized!');
 }
 
-$paymentID = intval($_GET['paymentID']);
+if (($_SESSION['role'] ?? null) !== 'Customer') {
+    http_response_code(403);
+    exit('Forbidden!');
+}
 
-$sql = "
-    SELECT 
-        p.paymentID, p.amount, p.date, p.status, a.date AS apptDate,
-        mfs.registrationFee, mfs.labTestFee, mfs.medicationFee, mfs.hospitalizationFee, mfs.otherFee, mfs.comment,
-        u.username AS staffName,
-        cu.username AS customerName
-        FROM Payment p
-        JOIN Appointment a ON p.appointmentID = a.appointmentID
-    JOIN Customer c ON a.customerID = c.customerID
-    JOIN User cu ON c.customerID = cu.userID
-    JOIN ManageFinanceStatus mfs ON mfs.financeID = p.paymentID
-    JOIN User u ON mfs.staffID = u.userID
-    WHERE p.paymentID = $paymentID
-";
+if (!isset($_GET['paymentID']) || !ctype_digit($_GET['paymentID'])) {
+    http_response_code(400);
+    exit('Invalid payment ID!');
+}
 
-$result = mysqli_query($conn, $sql);
+$paymentID = (int) $_GET['paymentID'];
+$customerID = (int) $_SESSION['userID'];
+
+
+$stmt=$conn->prepare("
+        SELECT 
+            p.paymentID, p.amount, p.date, p.status, a.date AS apptDate,
+            mfs.registrationFee, mfs.labTestFee, mfs.medicationFee, mfs.hospitalizationFee, mfs.otherFee, mfs.comment,
+            u.username AS staffName,
+            cu.username AS customerName
+            FROM Payment p
+            JOIN Appointment a ON p.appointmentID = a.appointmentID
+        JOIN Customer c ON a.customerID = c.customerID
+        JOIN User cu ON c.customerID = cu.userID
+        JOIN ManageFinanceStatus mfs ON mfs.financeID = p.paymentID
+        JOIN User u ON mfs.staffID = u.userID
+        WHERE p.paymentID = ?
+        AND p.customerID = ? ");
+
+$stmt->bind_param("ii",$paymentID, $customerID);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result && mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
@@ -46,11 +58,11 @@ if ($result && mysqli_num_rows($result) > 0) {
             <tr><td><strong>Customer:</strong></td><td>' . htmlspecialchars($row['customerName']) . '</td></tr>
             <tr><td><strong>Handled by:</strong></td><td>' . htmlspecialchars($row['staffName']) . '</td></tr>
             <tr><td colspan="2"><hr></td></tr>
-            <tr><td><strong>Registration Fee:</strong></td><td>RMB ' . $row['registrationFee'] . '</td></tr>
-            <tr><td><strong>Test Fee:</strong></td><td>RMB ' . $row['labTestFee'] . '</td></tr>
-            <tr><td><strong>Treatment Fee:</strong></td><td>RMB ' . $row['medicationFee'] . '</td></tr>
-            <tr><td><strong>Hospital Fee:</strong></td><td>RMB ' . $row['hospitalizationFee'] . '</td></tr>
-            <tr><td><strong>Other Fee:</strong></td><td>RMB ' . $row['otherFee'] . '</td></tr>';
+            <tr><td><strong>Registration Fee:</strong></td><td>RMB ' . htmlspecialchars($row['registrationFee']) . '</td></tr>
+            <tr><td><strong>Test Fee:</strong></td><td>RMB ' . htmlspecialchars($row['labTestFee']) . '</td></tr>
+            <tr><td><strong>Treatment Fee:</strong></td><td>RMB ' . htmlspecialchars($row['medicationFee']) . '</td></tr>
+            <tr><td><strong>Hospital Fee:</strong></td><td>RMB ' . htmlspecialchars($row['hospitalizationFee']) . '</td></tr>
+            <tr><td><strong>Other Fee:</strong></td><td>RMB ' . htmlspecialchars($row['otherFee']) . '</td></tr>';
 
     if (!empty($row['comment'])) {
         echo '<tr><td><strong>Other Fee Note:</strong></td><td>' . htmlspecialchars($row['comment']) . '</td></tr>';

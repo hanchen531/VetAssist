@@ -40,7 +40,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if (!$result->fetch_assoc()) {
-    http_response_code(404);
+    http_response_code(401);
     exit('Payment not found.');
 } 
 
