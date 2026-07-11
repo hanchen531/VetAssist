@@ -12,6 +12,10 @@ if (!isset($_SESSION['userID'])) {
     exit();
 }
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 $role = $_SESSION['role'] ?? null;
 if ($_SESSION['role'] === 'Customer') {
     $customerID = $_SESSION['userID'];
@@ -268,9 +272,13 @@ mysqli_close($conn);
                                             echo $tag . htmlspecialchars(date('d/m/Y', strtotime($appt['date'])) . ' at ' . $appt['time']); ?></span>
                                     <div class="sub">Dr. <?php echo htmlspecialchars($appt['username']); ?></div>
                                 </div>
-                                <a href="PHP/delete_appointment.php?id=<?php echo $appt['appointmentID']; ?>" onclick="return confirm('Are you sure to delete this appointment?')">
+                                <form method="POST" action="PHP/delete_appointment.php" style="display:inline;" onsubmit="return confirm('Are you sure to delete this appointment?');">
+                                <input type="hidden" name="id" value="<?php echo htmlspecialchars($appt['appointmentID']); ?>">
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                                <button type="submit" style="border:none; background:transparent; padding:0; cursor:pointer;">
                                     <i class="fas fa-trash-alt"></i>
-                                </a>
+                                </button>
+                                </form>
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
