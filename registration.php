@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <?php
+session_set_cookie_params([
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
 session_start();
 ?>
 
