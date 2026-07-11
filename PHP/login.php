@@ -12,7 +12,7 @@ $result = mysqli_query($conn, $sql);
 
 if (mysqli_num_rows($result) == 1) {
     $user = mysqli_fetch_assoc(result: $result);
-
+    session_regenerate_id(true);
     if (password_verify($password, $user['password'])) {
         $_SESSION['userID'] = $user['userID'];
         $_SESSION['username'] = $user['username'];
