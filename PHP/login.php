@@ -15,9 +15,9 @@ $sql = "SELECT * FROM User WHERE email='$email'";
 $result = mysqli_query($conn, $sql);
 
 if (mysqli_num_rows($result) == 1) {
-    $user = mysqli_fetch_assoc(result: $result);
-    session_regenerate_id(true);
+    $user = mysqli_fetch_assoc($result);
     if (password_verify($password, $user['password'])) {
+        session_regenerate_id(true);
         $_SESSION['userID'] = $user['userID'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['role'] = $user['role'];
@@ -25,10 +25,10 @@ if (mysqli_num_rows($result) == 1) {
         header("Location: ../index.php");
         exit();
     } else {
-        echo "<script>alert('Wrong Password, Please Enter Again!'); window.location.href = '../login.html';</script>";
+        echo "<script>alert('Invalid email or password.'); window.location.href = '../login.html';</script>";
     }
 } else {
-    echo "<script>alert('Invaild or Wrong Email Address, Please Double Check!'); window.location.href = '../login.html';</script>";
+    echo "<script>alert('Invalid email or password.'); window.location.href = '../login.html';</script>";
 }
 
 mysqli_close($conn);
