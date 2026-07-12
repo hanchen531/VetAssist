@@ -30,6 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $newPassword = $_POST['newPassword'];
     $confirmPassword = $_POST['confirmPassword'];
     $username = $_POST['username'];
+
+    if (!preg_match('/^[a-zA-Z0-9_ -]{1,50}$/', $username)) {
+    http_response_code(400);
+    exit('Invalid username');
+}
     $petName = $_POST['petName'];
     $petGender = $_POST['petGender'];
     $petAge = $_POST['petAge'];
@@ -83,7 +88,7 @@ mysqli_close($conn);
                 <ul class="text-right d-flex align-items-center m-0 p-0">
                     <li class="dropdown">
                         <a href="#" class="account-btn" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <?php echo $_SESSION['username']; ?>
+                            <?php echo htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8'); ?>
                             <i class="fas fa-caret-down ml-1"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-right custom-dropdown" aria-labelledby="dropdownMenuLink">

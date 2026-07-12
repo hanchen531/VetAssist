@@ -45,7 +45,7 @@ if (!isset($_SESSION['username'])) {
                 <ul class="text-right d-flex align-items-center m-0 p-0">
                     <li class="dropdown">
                         <a href="#" class="account-btn" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <?php echo $_SESSION['username']; ?>
+                            <?php echo htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8'); ?>
                             <i class="fas fa-caret-down ml-1"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-right custom-dropdown" aria-labelledby="dropdownMenuLink">
