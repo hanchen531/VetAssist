@@ -39,7 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         echo "<script>alert('Staff account added successfully'); window.location.href='../newstaff.php';</script>";
     } else {
-        echo "<script>alert('Error: " . mysqli_error($conn) . "'); history.back();</script>";
+        error_log("Staff account creation failed: " . mysqli_error($conn));
+        echo "<script>alert('Staff account creation failed. Please try again later.'); history.back();</script>";
     }
 
     mysqli_close($conn);

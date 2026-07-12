@@ -58,6 +58,8 @@ $insertSql = "INSERT INTO Appointment (customerID, doctorID, date, time, emergen
 if (mysqli_query($conn, $insertSql)) {
     echo "<script>alert('Emergency appointment created successfully.'); window.location.href='../index.php';</script>";
 } else {
-    echo "Failed to create appointment: " . mysqli_error($conn);
+    error_log("Emergency appointment creation failed: " . mysqli_error($conn));
+    http_response_code(500);
+    echo "Internal server error.";
 }
 ?>

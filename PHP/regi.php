@@ -59,10 +59,12 @@ if (mysqli_query($conn, $sql_user)) {
               </script>";
         exit();
     } else {
-        echo "Error inserting into Customer table: " . mysqli_error($conn);
+        error_log("Customer registration insert failed: " . mysqli_error($conn));
+        echo "<script>alert('Registration failed. Please try again later.'); history.back();</script>";
     }
 } else {
-    echo "Error inserting into User table: " . mysqli_error($conn);
+    error_log("User registration insert failed: " . mysqli_error($conn));
+    echo "<script>alert('Registration failed. Please try again later.'); history.back();</script>";
 }
 
 mysqli_close($conn);

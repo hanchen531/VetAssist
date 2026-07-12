@@ -21,7 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result) {
         echo "<script>alert('Vaccine added successfully!!!'); window.location.href='../management.php';</script>";
     } else {
-        echo "<script>alert('Error: " . mysqli_error($conn) . "'); history.back();</script>";
+        error_log("Vaccine insert failed: " . mysqli_error($conn));
+        echo "<script>alert('Vaccine could not be added. Please try again later.'); history.back();</script>";
     }
 
     mysqli_close($conn);

@@ -44,6 +44,8 @@ try {
     echo "OTP sent, please check your email!";
 } catch (Exception $e) {
     http_response_code(500);
-    echo "Mailer Error: {$mail->ErrorInfo}";
+    error_log("OTP email send failed: " . $mail->ErrorInfo);
+    http_response_code(500);
+    echo "Failed to send OTP. Please try again later.";
 }
 ?>

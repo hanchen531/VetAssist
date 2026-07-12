@@ -8,6 +8,8 @@ $dbname = "VetAssist";
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 
 if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+    error_log("Database connection failed: " . mysqli_connect_error());
+    http_response_code(500);
+    exit("Internal server error.");
 }
 ?>

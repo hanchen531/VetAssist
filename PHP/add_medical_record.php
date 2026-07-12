@@ -42,7 +42,8 @@ $result = mysqli_query($conn, $sql);
         if ($result) {
             echo "<script>alert('✅ Medical Record Added'); window.location.href='../management.php';</script>";
         } else {
-            echo "<script>alert('❌ Insert Error: " . mysqli_error($conn) . "'); history.back();</script>";
+            error_log("Medical record insert failed: " . mysqli_error($conn));
+            echo "<script>alert('Medical record could not be added. Please try again later.'); history.back();</script>";
         }
     } else {
         echo "<script>alert('❌ Appointment not found or user missing'); history.back();</script>";

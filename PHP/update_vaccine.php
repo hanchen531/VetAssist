@@ -22,7 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<script>alert('Stock Updated Successfully');
         window.location.href='../management.php';</script>";
     } else {
-        echo "<script>alert('Update Error: " . mysqli_error($conn) . "');
+        error_log("Vaccine stock update failed: " . mysqli_error($conn));
+        echo "<script>alert('Update failed. Please try again later.');
         history.back();</script>";
     }
 

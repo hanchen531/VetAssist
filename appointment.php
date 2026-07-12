@@ -67,7 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<script>alert('Appointment successfully booked!'); window.location.href='appointment.php';</script>";
         exit();
     } else {
-        echo "<script>alert('Failed to book due to: " . mysqli_error($conn) . "');</script>";
+        error_log("Appointment booking failed: " . mysqli_error($conn));
+        echo "<script>alert('Appointment booking failed. Please try again later.');</script>";
     }
 }
 
