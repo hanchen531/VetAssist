@@ -10,11 +10,23 @@ if (!isset($_SESSION['userID'])) {
     header("Location: login.html");
     exit();
 }
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 $role = $_SESSION['role'] ?? null;
 $userID = $_SESSION['userID'];
 $message = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (
+        !isset($_POST['csrf_token'], $_SESSION['csrf_token']) ||
+        !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
+    ) {
+        http_response_code(403);
+        exit('Invalid CSRF token');
+    }
+
     $newPassword = $_POST['newPassword'];
     $confirmPassword = $_POST['confirmPassword'];
     $username = $_POST['username'];
@@ -158,6 +170,7 @@ mysqli_close($conn);
 
         <div class="main-content">
             <form method="POST" onsubmit="return validatePassword();">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <div class="component-area">
                     <div style="font-size: x-large; font-weight: bold;">USER PROFILE</div>
 

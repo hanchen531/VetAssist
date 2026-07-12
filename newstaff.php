@@ -1,4 +1,8 @@
 <?php
+session_set_cookie_params([
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
 session_start();
 $currentPage = basename($_SERVER['PHP_SELF']);
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {

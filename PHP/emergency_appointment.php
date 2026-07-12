@@ -1,4 +1,8 @@
 <?php
+session_set_cookie_params([
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
 date_default_timezone_set('Asia/Kuala_Lumpur');
 session_start();
 include 'db_conn.php';
