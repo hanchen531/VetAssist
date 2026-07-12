@@ -38,6 +38,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $petName = $_POST['petName'];
     $petGender = $_POST['petGender'];
     $petAge = $_POST['petAge'];
+    if (!ctype_digit($petAge)) {
+    http_response_code(400);
+    exit('Invalid pet age!');
+    }
+    $petAge = (int) $petAge;
+
+    if ($petAge < 0 || $petAge > 50) {
+        http_response_code(400);
+        exit('Invalid pet age! ');
+    }
+
     $petSpecies = $_POST['petSpecies'];
 
     if (!empty($newPassword) && $newPassword === $confirmPassword) {
@@ -227,7 +238,7 @@ mysqli_close($conn);
 
                             <div class="form-row">
                                 <label for="petAge">Pet Age:</label>
-                                <input type="number" name="petAge" id="petAge" class="form-input" min="0"
+                                <input type="number" name="petAge" id="petAge" class="form-input" min="0" max="50"
                                     value="<?php echo htmlspecialchars((string)($user['petAge'] ?? 0)); ?>">
                             </div>
 
