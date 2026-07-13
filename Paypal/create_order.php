@@ -6,8 +6,9 @@ session_set_cookie_params([
 session_start();
 include '../PHP/db_conn.php';
 
-$clientId = 'Af-IyoqYQErQw1uc-hu7CivQhwQ_dwtKNfyGhGAE6hWH1K7ltKBnl2CV65ETWEFYkAmbmhuKFmS9lxwK';
-$secret = 'ELwj6QJ31RZ7Zu-07m-VN5DUwrMY-wiy-PMpX9tjiogMzknQmreyudDD9FNe85nB_bCcgKWkY3xIN-yg';
+$config = require __DIR__ . '/../PHP/config.php';
+$clientId = $config['paypal_client_id'];
+$secret = $config['paypal_secret'];
 
 if (!isset($_SESSION['userID'])) {
     http_response_code(401);

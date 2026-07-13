@@ -1,9 +1,11 @@
 <?php
 
-$servername = "127.0.0.1";  
-$username = "root";          
-$password = ""; 
-$dbname = "VetAssist";       
+$config = require __DIR__ . '/config.php';
+
+$servername = $config['db_host'];
+$username = $config['db_user'];
+$password = $config['db_pass'];
+$dbname = $config['db_name'];   
 
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 
