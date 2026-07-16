@@ -24,10 +24,13 @@ if ($_SESSION['role'] === 'Customer') {
     SELECT COUNT(*) AS unpaidCount
     FROM Appointment a
     JOIN Payment p ON a.appointmentID = p.appointmentID
-    WHERE a.customerID = $customerID AND p.status = 0
+    WHERE a.customerID = ? AND p.status = 0
 ";
 
-$res = mysqli_query($conn, $checkUnpaid);
+$stmt = $conn->prepare($checkUnpaid);
+$stmt->bind_param("i", $customerID);
+$stmt->execute();
+$res = $stmt->get_result();
 $row = mysqli_fetch_assoc($res);
 
 if ($row && $row['unpaidCount'] > 0) {
@@ -44,7 +47,9 @@ $customerID = $_SESSION['userID'];
 
 $doctorOptions = "<option disabled selected>Select a doctor</option>";
 $sql = "SELECT d.doctorID, u.username FROM Doctor d JOIN User u ON d.doctorID = u.userID";
-$result = mysqli_query($conn, $sql);
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
 while ($row = mysqli_fetch_assoc($result)) {
     $id = $row['doctorID'];
     $name = htmlspecialchars($row['username']);
@@ -55,19 +60,21 @@ while ($row = mysqli_fetch_assoc($result)) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
 
-    $type = mysqli_real_escape_string($conn, $_POST['type']);
-    $date = mysqli_real_escape_string($conn, $_POST['date']);
-    $time = mysqli_real_escape_string($conn, $_POST['time']);
-    $petInfo = mysqli_real_escape_string($conn, $_POST['petInfo']);
-    $doctorID = mysqli_real_escape_string($conn, $_POST['doctorID']);
+    $type = $_POST['type'];
+    $date = $_POST['date'];
+    $time = $_POST['time'];
+    $petInfo = $_POST['petInfo'];
+    $doctorID = (int)$_POST['doctorID'];
 
-    $sql = "INSERT INTO Appointment (date, time, doctorID, customerID) VALUES ('$date', '$time', '$doctorID', '$customerID')";
+    $sql = "INSERT INTO Appointment (date, time, doctorID, customerID) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssii", $date, $time, $doctorID, $customerID);
 
-    if (mysqli_query($conn, $sql)) {
+    if ($stmt->execute()) {
         echo "<script>alert('Appointment successfully booked!'); window.location.href='appointment.php';</script>";
         exit();
     } else {
-        error_log("Appointment booking failed: " . mysqli_error($conn));
+        error_log("Appointment booking failed: " . $stmt->error);
         echo "<script>alert('Appointment booking failed. Please try again later.');</script>";
     }
 }
@@ -240,14 +247,17 @@ mysqli_close($conn);
                 FROM Appointment a
                 JOIN Doctor d ON a.doctorID = d.doctorID
                 JOIN User u ON d.doctorID = u.userID
-                WHERE a.customerID = $customerID
+                WHERE a.customerID = ?
                 AND NOT EXISTS (
                 SELECT 1 FROM MedicalRecord m
                 WHERE m.appointmentID = a.appointmentID)
                 ORDER BY a.date ASC, a.time ASC
                 LIMIT 5";
 
-                $result = mysqli_query($conn, $sql);
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $customerID);
+                $stmt->execute();
+                $result = $stmt->get_result();
                 if ($result) {
                     while ($row = mysqli_fetch_assoc($result)) {
                         $appointments[] = $row;
@@ -288,7 +298,9 @@ mysqli_close($conn);
                 <div class="bottom-small-box">
                     <h5>Vaccination Stock</h5>
                     <?php
-                    $vaxResult = mysqli_query($conn, "SELECT name, quantity FROM VaccineStock");
+                    $stmt = $conn->prepare("SELECT name, quantity FROM VaccineStock");
+                    $stmt->execute();
+                    $vaxResult = $stmt->get_result();
                     if ($vaxResult && mysqli_num_rows($vaxResult) > 0):
                         while ($vax = mysqli_fetch_assoc($vaxResult)):
                     ?>

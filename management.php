@@ -149,7 +149,9 @@ $message = "";
 
                     <h5 class="mt-4">Edit Existing Stock</h5>
                     <?php
-                    $result = mysqli_query($conn, "SELECT * FROM VaccineStock");
+                    $stmt = $conn->prepare("SELECT * FROM VaccineStock");
+                    $stmt->execute();
+                    $result = $stmt->get_result();
                     if ($result && mysqli_num_rows($result) > 0): ?>
                         <table class="table table-bordered mt-3">
                             <thead class="thead-light">
@@ -210,13 +212,16 @@ $message = "";
                                         FROM Appointment a
                                         JOIN Customer c ON a.customerID = c.customerID
                                         JOIN User u ON u.userID = c.customerID
-                                        WHERE a.doctorID = $userID
-                                        AND a.date = '$selectedDate'
+                                        WHERE a.doctorID = ?
+                                        AND a.date = ?
                                         AND NOT EXISTS (
                                             SELECT 1 FROM MedicalRecord m WHERE m.appointmentID = a.appointmentID
                                         )
                                         ORDER BY a.time ASC";
-                                    $res = mysqli_query($conn, $query);
+                                    $stmt = $conn->prepare($query);
+                                    $stmt->bind_param("is", $userID, $selectedDate);
+                                    $stmt->execute();
+                                    $res = $stmt->get_result();
                                     if (mysqli_num_rows($res) === 0) {
                                         echo "<option disabled>No appointment available</option>";
                                     } else {
@@ -281,10 +286,13 @@ $message = "";
                         LEFT JOIN Payment p ON p.appointmentID = a.appointmentID
                         WHERE m.finished = 1
                         AND p.appointmentID IS NULL
-                        AND a.date = '$selectedDate'
+                        AND a.date = ?
                         ORDER BY a.time ASC;";
 
-                    $result = mysqli_query($conn, $sql);
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("s", $selectedDate);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
                     ?>
 
 
@@ -346,15 +354,22 @@ $message = "";
                         JOIN Appointment a ON m.appointmentID = a.appointmentID
                         JOIN Doctor d ON m.doctorID = d.doctorID
                         JOIN User u ON u.userID = d.doctorID
-                        WHERE m.doctorID = $userID";
+                        WHERE m.doctorID = ?";
 
                     if ($viewDate) {
-                        $sql .= " AND a.date = '$viewDate'";
+                        $sql .= " AND a.date = ?";
                     }
 
                     $sql .= " ORDER BY a.date DESC";
 
-                    $records = mysqli_query($conn, $sql);
+                    $stmt = $conn->prepare($sql);
+                    if ($viewDate) {
+                        $stmt->bind_param("is", $userID, $viewDate);
+                    } else {
+                        $stmt->bind_param("i", $userID);
+                    }
+                    $stmt->execute();
+                    $records = $stmt->get_result();
 
                     if (mysqli_num_rows($records) === 0) {
                         echo "<p>No records found for selected date.</p>";
@@ -386,14 +401,18 @@ $message = "";
                     <?php
                     $adminDate = $_GET['adminDate'] ?? date('Y-m-d');
 
-                    $records = mysqli_query($conn, "
+                    $sql = "
                         SELECT m.*, u.username AS doctorName, a.date, a.time
                         FROM MedicalRecord m
                         JOIN Doctor d ON m.doctorID = d.doctorID
                         JOIN User u ON u.userID = d.doctorID
                         JOIN Appointment a ON m.appointmentID = a.appointmentID
-                        WHERE a.date = '$adminDate'
-                        ORDER BY a.date DESC, a.time DESC");
+                        WHERE a.date = ?
+                        ORDER BY a.date DESC, a.time DESC";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("s", $adminDate);
+                    $stmt->execute();
+                    $records = $stmt->get_result();
 
                     if (mysqli_num_rows($records) === 0) {
                         echo "<p>No medical records found for selected date.</p>";

@@ -53,24 +53,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($newPassword) && $newPassword === $confirmPassword) {
         $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-        mysqli_query($conn, "UPDATE User SET password='$hashedPassword' WHERE userID=$userID");
+        $stmt = $conn->prepare("UPDATE User SET password=? WHERE userID=?");
+        $stmt->bind_param("si",$hashedPassword, $userID);
+        $stmt->execute();
     }
 
-    mysqli_query($conn, "UPDATE User SET username='$username' WHERE userID=$userID");
-    mysqli_query($conn, "UPDATE Customer SET petName='$petName', petGender='$petGender', petAge ='$petAge', petSpecialInfo ='$petSpecies' WHERE customerID=$userID");
-
+    $stmt = $conn->prepare("UPDATE User SET username=? WHERE userID=?");
+    $stmt->bind_param("si", $username, $userID);
+    $stmt->execute();
+    
+    $stmt = $conn->prepare("UPDATE Customer SET petName=?, petGender=?, petAge =?, petSpecialInfo =? WHERE customerID=?");
+    $stmt->bind_param("ssisi", $petName, $petGender, $petAge, $petSpecies, $userID);
+    $stmt->execute();
     $message = "Profile Updated Successfully!!";
 }
 
 
-$sql = "SELECT u.username, u.email, c.petName, c.petGender, c.petSpecialInfo, c.petAge FROM User u
-        LEFT JOIN Customer c ON u.userID = c.customerID
-        WHERE u.userID = $userID";
-
-$result = mysqli_query($conn, $sql);
-$user = mysqli_fetch_assoc($result);
-mysqli_close($conn);
-?>
+    $sql = "SELECT u.username, u.email, c.petName, c.petGender, c.petSpecialInfo, c.petAge FROM User u
+            LEFT JOIN Customer c ON u.userID = c.customerID
+            WHERE u.userID = ?";
+            
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    $stmt->close();
+    ?>
 
 
 

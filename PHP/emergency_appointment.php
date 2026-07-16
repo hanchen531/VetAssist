@@ -16,8 +16,11 @@ $userID = $_SESSION['userID'];
 $date = date('Y-m-d');
 
 
-$checkSql = "SELECT COUNT(*) AS count FROM Appointment WHERE customerID = $userID AND date = '$date' AND emergency = 1";
-$checkResult = mysqli_query($conn, $checkSql);
+$checkSql = "SELECT COUNT(*) AS count FROM Appointment WHERE customerID = ? AND date = ? AND emergency = 1";
+$stmt = $conn->prepare($checkSql);
+$stmt->bind_param("is", $userID, $date);
+$stmt->execute();
+$checkResult = $stmt->get_result();
 $countRow = mysqli_fetch_assoc($checkResult);
 
 if ($countRow['count'] >= 2) {
@@ -35,10 +38,13 @@ $doctorSql = "
     SELECT doctorID FROM Doctor
     WHERE doctorID NOT IN (
         SELECT doctorID FROM Appointment
-        WHERE date = '$date' AND time = '$time'
+        WHERE date = ? AND time = ?
     )
 ";
-$doctorResult = mysqli_query($conn, $doctorSql);
+$stmt = $conn->prepare($doctorSql);
+$stmt->bind_param("ss", $date, $time);
+$stmt->execute();
+$doctorResult = $stmt->get_result();
 $doctorList = [];
 
 while ($row = mysqli_fetch_assoc($doctorResult)) {
@@ -53,12 +59,15 @@ if (empty($doctorList)) {
 
 $doctorID = $doctorList[array_rand($doctorList)];
 $insertSql = "INSERT INTO Appointment (customerID, doctorID, date, time, emergency)
-              VALUES ($userID, $doctorID, '$date', '$time', 1)";
+              VALUES (?, ?, ?, ?, 1)";
 
-if (mysqli_query($conn, $insertSql)) {
+$stmt = $conn->prepare($insertSql);
+$stmt->bind_param("iiss", $userID, $doctorID, $date, $time);
+
+if ($stmt->execute()) {
     echo "<script>alert('Emergency appointment created successfully.'); window.location.href='../index.php';</script>";
 } else {
-    error_log("Emergency appointment creation failed: " . mysqli_error($conn));
+    error_log("Emergency appointment creation failed: " . $stmt->error);
     http_response_code(500);
     echo "Internal server error.";
 }

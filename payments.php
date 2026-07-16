@@ -150,10 +150,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                         JOIN Appointment a ON p.appointmentID = a.appointmentID
                         JOIN ManageFinanceStatus mfs ON p.paymentID = mfs.financeID
                         JOIN User u ON mfs.staffID = u.userID
-                        WHERE a.customerID = $customerID AND p.status = 0
+                        WHERE a.customerID = ? AND p.status = 0
                         ORDER BY p.date DESC";
 
-                        $result = mysqli_query($conn, $query);
+                        $stmt = $conn->prepare($query);
+                        $stmt->bind_param("i", $customerID);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
                         $bills = [];
                         while ($row = mysqli_fetch_assoc($result)) {
                             $bills[] = $row;
@@ -238,10 +241,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     LEFT JOIN Payment p ON p.appointmentID = a.appointmentID
                     WHERE m.finished = 1
                     AND p.paymentID IS NULL
-                    AND a.date = '$selectedDate'
+                    AND a.date = ?
                     ORDER BY a.time ASC";
 
-                    $result = mysqli_query($conn, $query);
+                    $stmt = $conn->prepare($query);
+                    $stmt->bind_param("s", $selectedDate);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
                     $appointments = [];
                     if ($result && mysqli_num_rows($result) > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
@@ -262,8 +268,11 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                         $staffID = $_SESSION['userID'];
 
                         // Get para
-                        $getCustomerQuery = "SELECT customerID FROM Appointment WHERE appointmentID = $appointmentID";
-                        $customerResult = mysqli_query($conn, $getCustomerQuery);
+                        $getCustomerQuery = "SELECT customerID FROM Appointment WHERE appointmentID = ?";
+                        $stmt = $conn->prepare($getCustomerQuery);
+                        $stmt->bind_param("i", $appointmentID);
+                        $stmt->execute();
+                        $customerResult = $stmt->get_result();
                         if (!$customerResult || mysqli_num_rows($customerResult) === 0) {
                             echo "<script>alert('Invalid appointment ID.'); window.history.back();</script>";
                             exit();
@@ -276,22 +285,26 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                         $treatFee = (float)$_POST['treatFee'];
                         $hospitalFee = (float)$_POST['hospitalFee'];
                         $otherFee = (float)$_POST['otherFee'];
-                        $comment = mysqli_real_escape_string($conn, $_POST['comment']);
+                        $comment = $_POST['comment'];
                         $totalAmount = $regFee + $testFee + $treatFee + $hospitalFee + $otherFee;
 
                         //Pass para to DB
                         $insertPayment = "
                         INSERT INTO Payment (appointmentID, customerID, amount, date, status)
-                        VALUES ($appointmentID, $customerID, $totalAmount, NOW(), 0)";
+                        VALUES (?, ?, ?, NOW(), 0)";
+                        $stmt = $conn->prepare($insertPayment);
+                        $stmt->bind_param("iid", $appointmentID, $customerID, $totalAmount);
 
-                        if (mysqli_query($conn, $insertPayment)) {
-                            $paymentID = mysqli_insert_id($conn);
+                        if ($stmt->execute()) {
+                            $paymentID = $conn->insert_id;
 
                             $insertFinance = "
                             INSERT INTO ManageFinanceStatus
                             (financeID, registrationFee, labTestFee, medicationFee, hospitalizationFee, otherFee, comment, staffID)
-                            VALUES ($paymentID, $regFee, $testFee, $treatFee, $hospitalFee, $otherFee, '$comment', $staffID)";
-                            if (!mysqli_query($conn, $insertFinance)) {
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                            $stmt = $conn->prepare($insertFinance);
+                            $stmt->bind_param("idddddsi", $paymentID, $regFee, $testFee, $treatFee, $hospitalFee, $otherFee, $comment, $staffID);
+                            if (!$stmt->execute()) {
                                 echo "<script>alert('Failed to insert finance details.');</script>";
                             }
 
@@ -370,10 +383,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         JOIN User cu ON c.customerID = cu.userID
         JOIN ManageFinanceStatus mfs ON p.paymentID = mfs.financeID
         JOIN User u ON mfs.staffID = u.userID
-        WHERE a.date = '$selectedDate'
+        WHERE a.date = ?
         ORDER BY p.date DESC";
 
-                        $billResult = mysqli_query($conn, $sql);
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bind_param("s", $selectedDate);
+                        $stmt->execute();
+                        $billResult = $stmt->get_result();
                     ?>
 
                         <h3>Bill History:</h3>
@@ -424,12 +440,15 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             JOIN User cu ON c.customerID = cu.userID
                             JOIN ManageFinanceStatus mfs ON mfs.financeID = p.paymentID
                             JOIN User u ON mfs.staffID = u.userID
-                            WHERE a.customerID = $customerID
+                            WHERE a.customerID = ?
                             AND p.status = 1
-                            AND p.date = '$selectedDate'
+                            AND p.date = ?
                             ORDER BY p.date DESC";
 
-                        $billResult = mysqli_query($conn, $sql);
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bind_param("is", $customerID, $selectedDate);
+                        $stmt->execute();
+                        $billResult = $stmt->get_result();
                     ?>
 
 

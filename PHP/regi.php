@@ -38,19 +38,34 @@ $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 $role = "Customer";
 
 
-$check_email = "SELECT * FROM User WHERE email = '$email'";
-$check_result = mysqli_query($conn, $check_email);
+$check_email = "SELECT * FROM User WHERE email = ?";
+$stmt = $conn->prepare($check_email);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$check_result = $stmt->get_result();
+
 if (mysqli_num_rows($check_result) > 0) {
     echo "<script>alert('Email already registered. Please use another one.'); history.back();</script>";
     exit();
 }
 
-$sql_user = "INSERT INTO User (username, password, email, role) VALUES ('$username', '$hashed_password', '$email', '$role')";
-if (mysqli_query($conn, $sql_user)) {
-    $userID = mysqli_insert_id($conn);
+$sql_user = "INSERT INTO User (username, password, email, role) VALUES (?, ?, ?, ?)";
+$stmt = $conn->prepare($sql_user);
+$stmt->bind_param("ssss", $username, $hashed_password, $email, $role);
 
-    $sql_customer = "INSERT INTO Customer (customerID, petName, petAge, petSpecialInfo) VALUES ($userID, 'Not Set', 'Not Set', 'Not Set')";
-    if (mysqli_query($conn, $sql_customer)) {
+
+if ($stmt->execute()) {
+    $userID = $conn->insert_id;
+
+    $sql_customer = "INSERT INTO Customer (customerID, petName, petAge, petSpecialInfo) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql_customer);
+    $defaultPetName = "Not Set";
+    $defaultPetAge = "Not Set";
+    $defaultPetInfo = "Not Set";
+    $stmt->bind_param("isss", $userID, $defaultPetName, $defaultPetAge, $defaultPetInfo);
+    
+
+    if ($stmt->execute()) {
         echo "<script>
                 alert('Registration successful! Now going to login page...');
                 setTimeout(function() {

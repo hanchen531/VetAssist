@@ -26,20 +26,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $hashed = password_hash($password, PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO User (username, password, email, role) VALUES ('$username', '$hashed', '$email', '$position')";
-    if (mysqli_query($conn, $sql)) {
-        $userID = mysqli_insert_id($conn);
+    if ($position !== 'Doctor' && $position !== 'Staff') {
+        echo "<script>alert('Invalid position'); history.back();</script>";
+        exit();
+    }
+
+    $sql = "INSERT INTO User (username, password, email, role) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssss", $username, $hashed, $email, $position);
+
+    if ($stmt->execute()) {
+        $userID = $conn->insert_id;
         $today = date('Y-m-d');
 
         if ($position === 'Doctor') {
-            mysqli_query($conn, "INSERT INTO Doctor (doctorID, docWorkStart) VALUES ('$userID', '$today')");
+            $stmt = $conn->prepare("INSERT INTO Doctor (doctorID, docWorkStart) VALUES (?, ?)");
+            $stmt->bind_param("is", $userID, $today);
+            $stmt->execute();
         } elseif ($position === 'Staff') {
-            mysqli_query($conn, "INSERT INTO Staff (staffID, staffWorkStart) VALUES ('$userID', '$today')");
+            $stmt = $conn->prepare("INSERT INTO Staff (staffID, staffWorkStart) VALUES (?, ?)");
+            $stmt->bind_param("is", $userID, $today);
+            $stmt->execute();
         }
 
         echo "<script>alert('Staff account added successfully'); window.location.href='../newstaff.php';</script>";
     } else {
-        error_log("Staff account creation failed: " . mysqli_error($conn));
+        error_log("Staff account creation failed: " . $stmt->error);
         echo "<script>alert('Staff account creation failed. Please try again later.'); history.back();</script>";
     }
 

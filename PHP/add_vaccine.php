@@ -13,15 +13,17 @@ if ($_SESSION['role'] !== 'Staff' && $_SESSION['role'] !== 'Admin') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
-    $quantity = $_POST['quantity'];
+    $quantity = (int)$_POST['quantity'];
 
-    $sql = "INSERT INTO VaccineStock (name, quantity) VALUES ('$name', $quantity)";
-    $result = mysqli_query($conn, $sql);
+    $sql = "INSERT INTO VaccineStock (name, quantity) VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $name, $quantity);
+    $result = $stmt->execute();
 
     if ($result) {
         echo "<script>alert('Vaccine added successfully!!!'); window.location.href='../management.php';</script>";
     } else {
-        error_log("Vaccine insert failed: " . mysqli_error($conn));
+        error_log("Vaccine insert failed: " . $stmt->error);
         echo "<script>alert('Vaccine could not be added. Please try again later.'); history.back();</script>";
     }
 

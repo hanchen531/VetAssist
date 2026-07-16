@@ -135,7 +135,7 @@ if (!isset($_SESSION['username'])) {
                 <div class="left-box">
 
                     <?php
-                    $latest = mysqli_query($conn, "
+                    $sql = "
                     SELECT 
                     m.recordID, m.diagnosis, m.treatment,
                     a.date, a.time,
@@ -144,9 +144,13 @@ if (!isset($_SESSION['username'])) {
                     JOIN Appointment a ON m.appointmentID = a.appointmentID
                     JOIN Doctor d ON m.doctorID = d.doctorID
                     JOIN User u ON u.userID = d.doctorID
-                    WHERE a.customerID = $userID
+                    WHERE a.customerID = ?
                     ORDER BY a.date DESC, a.time DESC
-                    LIMIT 1");
+                    LIMIT 1";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("i", $userID);
+                    $stmt->execute();
+                    $latest = $stmt->get_result();
                     $latestRow = mysqli_fetch_assoc($latest);
                     ?>
 
@@ -170,15 +174,19 @@ if (!isset($_SESSION['username'])) {
                     $date = date('Y-m-d');
                     $selectedDate = $_GET['date'] ?? $date;
 
-                    $history = mysqli_query($conn, "
+                    $sql = "
                         SELECT m.recordID, m.diagnosis, m.treatment, m.nextTreatment, a.date, a.time, u.username AS doctorName
                         FROM MedicalRecord m
                         JOIN Appointment a ON m.appointmentID = a.appointmentID
                         JOIN Doctor d ON m.doctorID = d.doctorID
                         JOIN User u ON u.userID = d.doctorID
-                        WHERE a.customerID = $userID
-                        AND a.date = '$selectedDate'
-                        ORDER BY a.date DESC, a.time DESC");
+                        WHERE a.customerID = ?
+                        AND a.date = ?
+                        ORDER BY a.date DESC, a.time DESC";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("is", $userID, $selectedDate);
+                    $stmt->execute();
+                    $history = $stmt->get_result();
 
                     
 

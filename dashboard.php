@@ -136,18 +136,24 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <?php
                 $appointmentData = [];
                 $today = date('Y-m-d');
-                $res1 = mysqli_query($conn, "
+                $sql = "
                     SELECT u.username AS doctorName, COUNT(*) AS count
                     FROM Appointment a
                     JOIN Doctor d ON a.doctorID = d.doctorID
                     JOIN User u ON u.userID = d.doctorID
-                    WHERE a.date = '$today'
-                    GROUP BY a.doctorID");
+                    WHERE a.date = ?
+                    GROUP BY a.doctorID";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("s", $today);
+                $stmt->execute();
+                $res1 = $stmt->get_result();
                 while ($row = mysqli_fetch_assoc($res1)) {
                     $appointmentData[] = $row;
                 }
                 $vaccineData = [];
-                $res2 = mysqli_query($conn, "SELECT name, quantity FROM VaccineStock");
+                $stmt = $conn->prepare("SELECT name, quantity FROM VaccineStock");
+                $stmt->execute();
+                $res2 = $stmt->get_result();
                 while ($row = mysqli_fetch_assoc($res2)) {
                     $vaccineData[] = $row;
                 }
@@ -179,7 +185,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                         <p style="font-size: 1.1rem;">
                             <strong>Total Income:</strong> RMB
                             <?php
-                            $res = mysqli_query($conn, "SELECT SUM(amount) AS total FROM Payment");
+                            $stmt = $conn->prepare("SELECT SUM(amount) AS total FROM Payment");
+                            $stmt->execute();
+                            $res = $stmt->get_result();
                             $row = mysqli_fetch_assoc($res);
                             echo number_format($row['total'] ?? 0, 2);
                             ?>
@@ -195,7 +203,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                                 SUM(otherFee) AS other
                             FROM ManageFinanceStatus
                         ";
-                        $feeRes = mysqli_query($conn, $feeSql);
+                        $stmt = $conn->prepare($feeSql);
+                        $stmt->execute();
+                        $feeRes = $stmt->get_result();
                         $fees = mysqli_fetch_assoc($feeRes);
                         ?>
 
@@ -231,14 +241,17 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             SELECT a.time, c.petName
                             FROM Appointment a
                             JOIN Customer c ON a.customerID = c.customerID
-                            WHERE a.doctorID = $doctorID
-                            AND a.date = '$today'
+                            WHERE a.doctorID = ?
+                            AND a.date = ?
                             AND NOT EXISTS (
                             SELECT 1 FROM MedicalRecord m
                             WHERE m.appointmentID = a.appointmentID)
                             ORDER BY a.time ASC";
 
-                        $AppNum = mysqli_query($conn, $getAppointments);
+                        $stmt = $conn->prepare($getAppointments);
+                        $stmt->bind_param("is", $doctorID, $today);
+                        $stmt->execute();
+                        $AppNum = $stmt->get_result();
 
                         if ($AppNum && mysqli_num_rows($AppNum) > 0) {
                             while ($row = mysqli_fetch_assoc($AppNum)) {
@@ -261,12 +274,15 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             FROM Appointment a
                             JOIN Customer c ON a.customerID = c.customerID
                             JOIN User u ON u.userID = c.customerID
-                            WHERE a.doctorID = $doctorID
+                            WHERE a.doctorID = ?
                             AND NOT EXISTS (
                             SELECT 1 FROM MedicalRecord m
                             WHERE m.appointmentID = a.appointmentID)
                             ORDER BY a.date ASC, a.time ASC";
-                        $res = mysqli_query($conn, $query);
+                        $stmt = $conn->prepare($query);
+                        $stmt->bind_param("i", $doctorID);
+                        $stmt->execute();
+                        $res = $stmt->get_result();
 
                         if ($res && mysqli_num_rows($res) > 0) {
                             while ($row = mysqli_fetch_assoc($res)) {
@@ -316,7 +332,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             $vaccineNames = [];
                             $vaccineQuantities = [];
 
-                            $vaxResult = mysqli_query($conn, "SELECT name, quantity FROM VaccineStock");
+                            $stmt = $conn->prepare("SELECT name, quantity FROM VaccineStock");
+                            $stmt->execute();
+                            $vaxResult = $stmt->get_result();
                             if ($vaxResult && mysqli_num_rows($vaxResult) > 0) {
                                 while ($vax = mysqli_fetch_assoc($vaxResult)) {
                                     $vaccineNames[] = $vax['name'];
@@ -373,10 +391,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             JOIN Customer c ON a.customerID = c.customerID
                             JOIN Doctor d ON a.doctorID = d.doctorID
                             JOIN User u ON u.userID = d.doctorID
-                            WHERE a.date = '$today'
+                            WHERE a.date = ?
                             ORDER BY a.time ASC";
 
-                            $result = mysqli_query($conn, $query);
+                            $stmt = $conn->prepare($query);
+                            $stmt->bind_param("s", $today);
+                            $stmt->execute();
+                            $result = $stmt->get_result();
 
                             if ($result && mysqli_num_rows($result) > 0):
                                 while ($row = mysqli_fetch_assoc($result)):
@@ -416,8 +437,11 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             <?php else: ?>
                 <?php
                 $userID = $_SESSION['userID'];
-                $query = "SELECT petName, petSpecialInfo, petAge FROM Customer WHERE customerID = $userID";
-                $result = mysqli_query($conn, $query);
+                $query = "SELECT petName, petSpecialInfo, petAge FROM Customer WHERE customerID = ?";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param("i", $userID);
+                $stmt->execute();
+                $result = $stmt->get_result();
                 $pet = mysqli_fetch_assoc($result);
                 ?>
 
@@ -447,13 +471,16 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             FROM Appointment a
                             JOIN Doctor d ON a.doctorID = d.doctorID
                             JOIN User u ON u.userID = d.doctorID
-                            WHERE a.customerID = $userID
+                            WHERE a.customerID = ?
                             AND NOT EXISTS (
                             SELECT 1 FROM MedicalRecord m WHERE m.appointmentID = a.appointmentID
                             )
                             ORDER BY a.date ASC, a.time ASC
                             LIMIT 2";
-                        $result = mysqli_query($conn, $sql);
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bind_param("i", $userID);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
                         if ($result && mysqli_num_rows($result) > 0):
                             while ($row = mysqli_fetch_assoc($result)):
                         ?>
@@ -487,11 +514,14 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             SELECT m.treatment, a.date
                             FROM MedicalRecord m
                             JOIN Appointment a ON m.appointmentID = a.appointmentID
-                            WHERE a.customerID = $userID
+                            WHERE a.customerID = ?
                             ORDER BY a.date DESC, a.time DESC
                             LIMIT 2";
 
-                        $result = mysqli_query($conn, $query);
+                        $stmt = $conn->prepare($query);
+                        $stmt->bind_param("i", $userID);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
 
                         if ($result && mysqli_num_rows($result) > 0):
                             while ($row = mysqli_fetch_assoc($result)):
@@ -525,12 +555,15 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             SELECT mr.diagnosis, a.date
                             FROM MedicalRecord mr
                             JOIN Appointment a ON mr.appointmentID = a.appointmentID
-                            WHERE a.customerID = $userID
+                            WHERE a.customerID = ?
                             ORDER BY a.date DESC
                             LIMIT 3";
 
 
-                        $result = mysqli_query($conn, $sql);
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bind_param("i", $userID);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
                         ?>
 
                         <?php if ($result && mysqli_num_rows($result) > 0): ?>
@@ -560,11 +593,14 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             JOIN Payment p ON mfs.financeID = p.paymentID
                             JOIN Appointment a ON p.appointmentID = a.appointmentID
                             JOIN Customer c ON a.customerID = c.customerID
-                            WHERE c.customerID = $userID
+                            WHERE c.customerID = ?
                             ORDER BY p.date DESC
                             LIMIT 1";
 
-                        $res = mysqli_query($conn, $financeQuery);
+                        $stmt = $conn->prepare($financeQuery);
+                        $stmt->bind_param("i", $userID);
+                        $stmt->execute();
+                        $res = $stmt->get_result();
                         $mfs = mysqli_fetch_assoc($res);
                         ?>
 

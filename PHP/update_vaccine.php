@@ -12,17 +12,19 @@ if ($_SESSION['role'] !== 'Staff' && $_SESSION['role'] !== 'Admin') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $vaccineID = $_POST['vaccineID'];
-    $quantity = $_POST['quantity'];
+    $vaccineID = (int)$_POST['vaccineID'];
+    $quantity = (int)$_POST['quantity'];
 
-    $sql = "UPDATE VaccineStock SET quantity = $quantity WHERE vaccineID = $vaccineID";
-    $result = mysqli_query($conn, $sql);
+    $sql = "UPDATE VaccineStock SET quantity = ? WHERE vaccineID = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $quantity, $vaccineID);
+    $result = $stmt->execute();
 
     if ($result) {
         echo "<script>alert('Stock Updated Successfully');
         window.location.href='../management.php';</script>";
     } else {
-        error_log("Vaccine stock update failed: " . mysqli_error($conn));
+        error_log("Vaccine stock update failed: " . $stmt->error);
         echo "<script>alert('Update failed. Please try again later.');
         history.back();</script>";
     }

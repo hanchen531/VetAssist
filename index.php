@@ -263,11 +263,14 @@ if (isset($_GET['emergency']) && $_GET['emergency'] === 'success') {
                             FROM Appointment a
                             JOIN Doctor d ON a.doctorID = d.doctorID
                             JOIN User u ON u.userID = d.doctorID
-                            WHERE a.customerID = $userID AND a.date >= '$today'
+                            WHERE a.customerID = ? AND a.date >= ?
                             ORDER BY a.date, a.time
                             LIMIT 5
                         ";
-                        $res = mysqli_query($conn, $sql);
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bind_param("is", $userID, $today);
+                        $stmt->execute();
+                        $res = $stmt->get_result();
                         if (mysqli_num_rows($res) > 0) {
                             while ($row = mysqli_fetch_assoc($res)) {
                                 $date = date("d / M", strtotime($row['date']));
@@ -283,11 +286,14 @@ if (isset($_GET['emergency']) && $_GET['emergency'] === 'success') {
                             FROM Appointment a
                             JOIN Customer c ON a.customerID = c.customerID
                             JOIN User u ON u.userID = c.customerID
-                            WHERE a.doctorID = $userID AND a.date >= '$today'
+                            WHERE a.doctorID = ? AND a.date >= ?
                             ORDER BY a.date, a.time
                             LIMIT 5
                         ";
-                        $res = mysqli_query($conn, $sql);
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bind_param("is", $userID, $today);
+                        $stmt->execute();
+                        $res = $stmt->get_result();
                         if (mysqli_num_rows($res) > 0) {
                             while ($row = mysqli_fetch_assoc($res)) {
                                 $date = date("d / M", strtotime($row['date']));
@@ -305,11 +311,14 @@ if (isset($_GET['emergency']) && $_GET['emergency'] === 'success') {
                             JOIN User u ON u.userID = c.customerID
                             JOIN Doctor doc ON a.doctorID = doc.doctorID
                             JOIN User d ON d.userID = doc.doctorID
-                            WHERE a.date >= '$today'
+                            WHERE a.date >= ?
                             ORDER BY a.date, a.time
                             LIMIT 5
                         ";
-                        $res = mysqli_query($conn, $sql);
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bind_param("s", $today);
+                        $stmt->execute();
+                        $res = $stmt->get_result();
                         if (mysqli_num_rows($res) > 0) {
                             while ($row = mysqli_fetch_assoc($res)) {
                                 $date = date("d / M", strtotime($row['date']));
@@ -321,19 +330,28 @@ if (isset($_GET['emergency']) && $_GET['emergency'] === 'success') {
                         }
                     } elseif ($role === 'Admin') {
      
-                        $totalRes = mysqli_query($conn, "SELECT SUM(amount) AS totalIncome FROM Payment WHERE status = 1");
+                        $stmt = $conn->prepare("SELECT SUM(amount) AS totalIncome FROM Payment WHERE status = 1");
+                        $stmt->execute();
+                        $totalRes = $stmt->get_result();
                         $totalIncome = mysqli_fetch_assoc($totalRes)['totalIncome'] ?? 0.00;
 
-                        $monthRes = mysqli_query($conn, "
+                        $sql = "
                             SELECT SUM(amount) AS monthIncome 
                             FROM Payment 
-                            WHERE status = 1 AND MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())");
+                            WHERE status = 1 AND MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->execute();
+                        $monthRes = $stmt->get_result();
                         $monthIncome = mysqli_fetch_assoc($monthRes)['monthIncome'] ?? 0.00;
 
-                        $todayRes = mysqli_query($conn, "
+                        $sql = "
                             SELECT SUM(amount) AS todayIncome 
                             FROM Payment 
-                            WHERE status = 1 AND date = '$today'");
+                            WHERE status = 1 AND date = ?";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bind_param("s", $today);
+                        $stmt->execute();
+                        $todayRes = $stmt->get_result();
                         $todayIncome = mysqli_fetch_assoc($todayRes)['todayIncome'] ?? 0.00;
 
                         echo "<li><strong>Total Income:</strong> RM " . number_format($totalIncome, 2) . "</li><br>";

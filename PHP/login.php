@@ -11,8 +11,12 @@ include 'db_conn.php';
 $email = $_POST['email'];
 $password = $_POST['password'];
 
-$sql = "SELECT * FROM User WHERE email='$email'";
-$result = mysqli_query($conn, $sql);
+$sql = "SELECT * FROM User WHERE email=?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+
+$result = $stmt->get_result();
 
 if (mysqli_num_rows($result) == 1) {
     $user = mysqli_fetch_assoc($result);
